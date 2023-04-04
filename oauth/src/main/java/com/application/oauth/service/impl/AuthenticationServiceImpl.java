@@ -3,6 +3,7 @@ package com.application.oauth.service.impl;
 import com.application.oauth.dto.BearerToken;
 import com.application.oauth.dto.LoginDto;
 import com.application.oauth.dto.RegisterDto;
+import com.application.oauth.dto.UserDto;
 import com.application.oauth.exception.RolenameNotFoundException;
 import com.application.oauth.model.Role;
 import com.application.oauth.model.RoleEnum;
@@ -12,6 +13,7 @@ import com.application.oauth.repository.UserRepository;
 import com.application.oauth.security.TokenProvider;
 import com.application.oauth.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +32,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
+
     private final TokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
 
@@ -59,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Role role = roleRepository.findByName(RoleEnum.USER).orElseThrow(() -> new RolenameNotFoundException("Role name not found"));
             user.setRoles(Collections.singletonList(role));
 //            String token = tokenProvider.generateToken(registerDto.getUsername(), Collections.singletonList(role.getRoleName()));
-            return  userRepository.save(user); /*new BearerToken(token, "Bearer ");*/
+            return userRepository.save(user); /*new BearerToken(token, "Bearer ");*/
         }
     }
 }
