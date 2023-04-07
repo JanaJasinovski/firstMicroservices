@@ -1,6 +1,5 @@
-package com.application.oauth.security;
+package com.application.product.security;
 
-import com.application.oauth.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

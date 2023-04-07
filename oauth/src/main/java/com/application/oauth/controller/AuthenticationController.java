@@ -20,7 +20,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping( "/signup" )
-    public User register(@RequestBody RegisterDto registerDto) {
+    public BearerToken register(@RequestBody RegisterDto registerDto) {
         return authenticationService.register(registerDto);
     }
 

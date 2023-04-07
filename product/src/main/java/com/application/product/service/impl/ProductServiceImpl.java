@@ -20,8 +20,8 @@ public class ProductServiceImpl implements ProductService {
     private final DtoConvert dtoConvert;
 
     @Override
-    public void createProduct(ProductDto productDTO, String username) {
-        Product product = new Product(productDTO.getName(), productDTO.getPrice(), productDTO.getAmount(), username);
+    public void createProduct(ProductDto productDTO, Long userId) {
+        Product product = new Product(productDTO.getName(),productDTO.getPrice(),productDTO.getAmount(), userId);
         productRepository.save(product);
     }
 
@@ -39,5 +39,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> findByAmount(Long amount) {
         return productRepository.findByAmount(amount).stream().map(dtoConvert::convertProduct).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> getAll() {
+        return productRepository.findAll().stream().map(dtoConvert::convertProduct).collect(Collectors.toList());
     }
 }

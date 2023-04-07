@@ -1,13 +1,17 @@
 package com.application.oauth.security.impl;
 
+import com.application.oauth.model.User;
+import com.application.oauth.repository.UserRepository;
 import com.application.oauth.security.TokenProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,12 +20,14 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class TokenProviderImpl implements TokenProvider {
-
+    private final UserRepository userRepository;
     @Value( "${app.jwt.secret}" )
     private String JWT_SECRET;
 
@@ -60,10 +66,12 @@ public class TokenProviderImpl implements TokenProvider {
 
     @Override
     public String generateToken(String username, List<String> roles) {
+       User user = userRepository.findByUsername(username).orElseThrow();
 
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", roles)
+                .claim("userId", user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_IN_MS))
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET).compact();

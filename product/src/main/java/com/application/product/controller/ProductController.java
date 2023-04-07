@@ -1,10 +1,17 @@
 package com.application.product.controller;
 
 import com.application.product.dto.ProductDto;
-import com.application.product.feignClient.UserClient;
+import com.application.product.security.TokenProvider;
 import com.application.product.service.ProductService;
+import com.application.product.utils.DtoConvert;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,14 +26,22 @@ import java.util.List;
 @RequestMapping( "/products" )
 @RequiredArgsConstructor
 public class ProductController {
-    private final ProductService productService;
-    private final UserClient userClient;
 
-    @PostMapping( "/{username}" )
-    public void addProduct(@RequestBody ProductDto productDto, @PathVariable String username) {
-        if (userClient.isUserAdmin(username)) {
-            productService.createProduct(productDto, username);
-        }
+    @Value( "${app.jwt.secret}" )
+    private String JWT_SECRET;
+    private final ProductService productService;
+    private final TokenProvider tokenProvider;
+
+    @PostMapping( "/create" )
+    @PreAuthorize( "hasAuthority('"++"')" )
+    public void addProduct(@RequestBody ProductDto productDto, HttpServletRequest request) {
+        productService.createProduct(productDto, tokenProvider.extractUserId(request));
+    }
+
+    @GetMapping( "/all" )
+    @PreAuthorize( "hasAuthority('ADMIN')" )
+    public List<ProductDto> getAll() {
+        return productService.getAll();
     }
 
     @GetMapping( "/{name}" )
@@ -35,7 +50,8 @@ public class ProductController {
     }
 
     @GetMapping( "/{startPrice}/{endPrice}" )
-    public List<ProductDto> getProductPriceBetween(@PathVariable BigDecimal startPrice, @PathVariable BigDecimal endPrice) {
+    public List<ProductDto> getProductPriceBetween(@PathVariable BigDecimal startPrice, @PathVariable BigDecimal
+            endPrice) {
         return productService.findByPriceBetween(startPrice, endPrice);
     }
 

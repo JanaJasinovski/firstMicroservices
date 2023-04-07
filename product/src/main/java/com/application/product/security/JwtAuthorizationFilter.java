@@ -1,4 +1,4 @@
-package com.application.oauth.security;
+package com.application.product.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,7 +25,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String token = tokenProvider.getToken(request);
 
         if (token != null && tokenProvider.validateToken(token)) {
-            String username = tokenProvider.extractUsername(token);
+            String username = tokenProvider.extractUsername(request);
 
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
             if (userDetails != null) {

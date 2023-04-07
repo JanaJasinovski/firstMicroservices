@@ -53,7 +53,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public User register(RegisterDto registerDto) {
+    public BearerToken register(RegisterDto registerDto) {
         if (userRepository.existsByUsername(registerDto.getUsername())) {
             throw new UsernameNotFoundException("User already exists with username: " + registerDto.getUsername());
         } else {
@@ -62,8 +62,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
             Role role = roleRepository.findByName(RoleEnum.USER).orElseThrow(() -> new RolenameNotFoundException("Role name not found"));
             user.setRoles(Collections.singletonList(role));
-//            String token = tokenProvider.generateToken(registerDto.getUsername(), Collections.singletonList(role.getRoleName()));
-            return userRepository.save(user); /*new BearerToken(token, "Bearer ");*/
+            userRepository.save(user);
+            String token = tokenProvider.generateToken(registerDto.getUsername(), Collections.singletonList(role.getRoleName()));
+            return new BearerToken(token, "Bearer ");
         }
     }
 }

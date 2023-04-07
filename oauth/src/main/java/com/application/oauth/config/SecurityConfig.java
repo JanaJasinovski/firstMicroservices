@@ -1,5 +1,6 @@
 package com.application.oauth.config;
 
+import com.application.oauth.model.RoleEnum;
 import com.application.oauth.security.CustomUserDetailsService;
 import com.application.oauth.security.JwtAuthorizationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,13 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
-    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -33,8 +32,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/authentication/**").permitAll()
-                .requestMatchers("/api/admin/**").permitAll()
-                .requestMatchers("/api/user/**").permitAll();
+                .requestMatchers("/api/admin/**").permitAll();
         http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
