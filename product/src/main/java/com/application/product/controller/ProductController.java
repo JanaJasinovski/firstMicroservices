@@ -27,19 +27,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    @Value( "${app.jwt.secret}" )
-    private String JWT_SECRET;
     private final ProductService productService;
     private final TokenProvider tokenProvider;
 
     @PostMapping( "/create" )
-    @PreAuthorize( "hasAuthority('"++"')" )
     public void addProduct(@RequestBody ProductDto productDto, HttpServletRequest request) {
-        productService.createProduct(productDto, tokenProvider.extractUserId(request));
+        productService.createProduct(productDto, tokenProvider.extractUser(request).getId());
     }
 
     @GetMapping( "/all" )
-    @PreAuthorize( "hasAuthority('ADMIN')" )
     public List<ProductDto> getAll() {
         return productService.getAll();
     }
@@ -49,14 +45,29 @@ public class ProductController {
         return productService.findByName(name);
     }
 
+    @GetMapping( "/{name}/{startPrice}/{endPrice}" )
+    public List<ProductDto> getProductByNameAndPriceBetween(@PathVariable String name, @PathVariable BigDecimal startPrice, @PathVariable BigDecimal
+            endPrice) {
+        return productService.findProductByNameAndPriceBetween(name, startPrice, endPrice);
+    }
+
     @GetMapping( "/{startPrice}/{endPrice}" )
     public List<ProductDto> getProductPriceBetween(@PathVariable BigDecimal startPrice, @PathVariable BigDecimal
             endPrice) {
         return productService.findByPriceBetween(startPrice, endPrice);
     }
 
+    @GetMapping( "/all/{amount}/{startPrice}/{endPrice}" )
+    public List<ProductDto> getProductByAmount(@PathVariable Long amount, @PathVariable BigDecimal startPrice, @PathVariable BigDecimal
+            endPrice) {
+        return productService.getProductByAmountAndPriceBetween(amount, startPrice, endPrice);
+    }
+
     @GetMapping( "/all/{amount}" )
-    public List<ProductDto> getProductByAmount(@PathVariable Long amount) {
+    public List<ProductDto> getProductByAmountAndPriceBetween(@PathVariable Long amount, @PathVariable BigDecimal startPrice, @PathVariable BigDecimal
+            endPrice) {
         return productService.findByAmount(amount);
     }
+
+
 }

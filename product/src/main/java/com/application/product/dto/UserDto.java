@@ -1,14 +1,12 @@
-package com.application.oauth.dto;
+package com.application.product.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class UserDto {
     private Long id;
     private String username;

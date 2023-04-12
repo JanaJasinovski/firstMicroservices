@@ -10,6 +10,7 @@ public interface ProductService {
     ProductDto findByName(String name);
     List<ProductDto> findByPriceBetween(BigDecimal startPrice, BigDecimal endPrice);
     List<ProductDto> findByAmount(Long amount);
-
+    List<ProductDto> findProductByNameAndPriceBetween(String name, BigDecimal startPrice, BigDecimal endPrice);
     List<ProductDto> getAll();
+    List<ProductDto> getProductByAmountAndPriceBetween(Long amount, BigDecimal startPrice, BigDecimal endPrice);
 }

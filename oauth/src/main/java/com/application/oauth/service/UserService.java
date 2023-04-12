@@ -1,11 +1,10 @@
 package com.application.oauth.service;
 
-import com.application.oauth.model.User;
+import com.application.oauth.dto.UserDto;
 
 import java.util.List;
 
 public interface UserService {
-    List<User> findAllUsers();
-
-
+    List<UserDto> findAllUsers();
+    UserDto getUserByUsername(String username);
 }

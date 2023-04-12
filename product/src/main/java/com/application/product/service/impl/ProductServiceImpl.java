@@ -7,9 +7,11 @@ import com.application.product.repository.ProductRepository;
 import com.application.product.service.ProductService;
 import com.application.product.utils.DtoConvert;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,11 +40,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> findByAmount(Long amount) {
-        return productRepository.findByAmount(amount).stream().map(dtoConvert::convertProduct).collect(Collectors.toList());
+        return productRepository.findByAmount(amount).stream()
+                .map(dtoConvert::convertProduct)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> findProductByNameAndPriceBetween(String name, BigDecimal startPrice, BigDecimal endPrice) {
+        return productRepository.findByNameAndPriceBetween(name, startPrice, endPrice).stream()
+                .map(dtoConvert::convertProduct)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ProductDto> getAll() {
         return productRepository.findAll().stream().map(dtoConvert::convertProduct).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> getProductByAmountAndPriceBetween(Long amount, BigDecimal startPrice, BigDecimal endPrice) {
+        return productRepository.findProductByAmountAndPriceBetween(amount, startPrice, endPrice).stream()
+                .map(dtoConvert::convertProduct)
+                .collect(Collectors.toList());
     }
 }

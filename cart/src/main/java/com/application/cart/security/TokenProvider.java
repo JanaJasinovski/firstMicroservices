@@ -1,6 +1,6 @@
-package com.application.product.security;
+package com.application.cart.security;
 
-import com.application.product.dto.UserDto;
+import com.application.cart.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface TokenProvider {

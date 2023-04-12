@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-
 @Entity
 @Table( name = "roles" )
 @NoArgsConstructor
@@ -29,10 +28,6 @@ public class Role {
     @Enumerated( EnumType.STRING )
     @Column( name = "name" )
     private RoleEnum name;
-
-    public Role(RoleEnum name) {
-        this.name = name;
-    }
 
     public String getRoleName() {
         return name.toString();
