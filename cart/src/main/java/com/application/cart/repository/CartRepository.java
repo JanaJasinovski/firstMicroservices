@@ -8,11 +8,9 @@ import java.util.List;
 
 @Repository
 public interface CartRepository extends MongoRepository<Cart, String> {
+    List<Cart> findCartByProductId(Long id);
+    List<Cart> findCartByUserId(Long userId);
     void deleteCartByUserId(Long userId);
 
-    List<Cart> findCartByProductId(Long id);
-
-    List<Cart> findCartByUserId(Long userId);
-
-    void deleteAllByUserId(Long userId);
+//    void deleteAllByUserId(Long userId);
 }

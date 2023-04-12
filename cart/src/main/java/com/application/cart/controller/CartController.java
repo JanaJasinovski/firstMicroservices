@@ -27,15 +27,34 @@ public class CartController {
         cartService.addProductToCart(productName, tokenProvider.extractUser(request).getId(), amount, token);
     }
 
-    @PostMapping("/{userId}")
-    public void clearCartByUserId(@PathVariable Long userId) {
-        cartService.deleteCartByUserId(userId);
-    }
 
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping( "/all" )
+    @PreAuthorize( "hasRole('ROLE_ADMIN')" )
     public List<Cart> getAllCarts() {
         return cartService.getAllCarts();
+    }
+
+    @GetMapping( "/cart/get/{id}" )
+    @PreAuthorize( "hasRole('ROLE_ADMIN')" )
+    public Cart getCartById(@PathVariable String id) {
+        return cartService.getCartById(id);
+    }
+
+    @GetMapping( "user/{userId}" )
+    @PreAuthorize( "hasRole('ROLE_ADMIN')" )
+    public List<Cart> getCartByUserId(@PathVariable Long userId) {
+        return cartService.getCartByUserId(userId);
+    }
+
+    @GetMapping( "product/{productId}" )
+    @PreAuthorize( "hasRole('ROLE_ADMIN')" )
+    public List<Cart> getCartByProductId(@PathVariable Long productId) {
+        return cartService.getCartByProductId(productId);
+    }
+    @PostMapping("/{userId}")
+    @PreAuthorize( "hasRole('ROLE_ADMIN')" )
+    public void clearCartByUserId(@PathVariable Long userId) {
+        cartService.deleteCartByUserId(userId);
     }
 
     @PostMapping("/cart/{id}")
@@ -44,21 +63,4 @@ public class CartController {
         cartService.deleteCartById(id);
     }
 
-    @GetMapping("/cart/get/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void getCartById(@PathVariable String id) {
-        cartService.getCartById(id);
-    }
-
-    @GetMapping("product/{productId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void getCartByProductId(@PathVariable Long productId) {
-        cartService.getCartByProductId(productId);
-    }
-
-    @GetMapping("user/{userId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void getCartByUserId(@PathVariable Long userId) {
-        cartService.getCartByUserId(userId);
-    }
 }

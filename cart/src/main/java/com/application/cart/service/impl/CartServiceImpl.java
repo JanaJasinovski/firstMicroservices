@@ -43,22 +43,6 @@ public class CartServiceImpl implements CartService {
         return cartRepository.findAll();
     }
 
-
-    @Override
-    public List<Cart> getCartByProductId(Long id) {
-        return cartRepository.findCartByProductId(id);
-    }
-
-    @Override
-    public void deleteCartById(String id) {
-        cartRepository.deleteById(id);
-    }
-
-    @Override
-    public void deleteCartByUserId(Long id) {
-        cartRepository.deleteCartByUserId(id);
-    }
-
     @Override
     public Cart getCartById(String id) {
         return cartRepository.findById(id).orElseThrow();
@@ -67,5 +51,20 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<Cart> getCartByUserId(Long id) {
         return cartRepository.findCartByUserId(id);
+    }
+
+    @Override
+    public List<Cart> getCartByProductId(Long id) {
+        return cartRepository.findCartByProductId(id);
+    }
+
+    @Override
+    public void deleteCartByUserId(Long id) {
+        cartRepository.deleteCartByUserId(id);
+    }
+
+    @Override
+    public void deleteCartById(String id) {
+        cartRepository.deleteById(id);
     }
 }

@@ -11,8 +11,6 @@ public interface CartService {
     Cart getCartById(String id);
     List<Cart> getCartByUserId(Long id);
     List<Cart> getCartByProductId(Long id);
-
-    void deleteCartById(String id);
     void deleteCartByUserId(Long id);
-
+    void deleteCartById(String id);
 }
