@@ -1,0 +1,24 @@
+version: '3.5'
+
+services:
+  app:
+    build: ./
+    container_name: 'oauth-app'
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/oauthService
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=2301003120701
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'oauthService'
+      MYSQL_ROOT_PASSWORD: '2301003120701'
+    ports:
+      - '3306:3306'
