@@ -13,4 +13,5 @@ public interface ProductService {
     List<ProductDto> findProductByNameAndPriceBetween(String name, BigDecimal startPrice, BigDecimal endPrice);
     List<ProductDto> getAll();
     List<ProductDto> getProductByAmountAndPriceBetween(Long amount, BigDecimal startPrice, BigDecimal endPrice);
+    void updateProductAmount(Long productId, Long amount);
 }

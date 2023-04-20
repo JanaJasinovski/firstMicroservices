@@ -26,7 +26,9 @@ public class SpringConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/products/**").hasAuthority("ADMIN");
+                .requestMatchers("/products/**").hasAnyAuthority("ADMIN", "USER")
+                .requestMatchers("/products/create").hasAuthority("ADMIN")
+                .requestMatchers("/product/update/**").hasAuthority("ADMIN");
 
         http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 

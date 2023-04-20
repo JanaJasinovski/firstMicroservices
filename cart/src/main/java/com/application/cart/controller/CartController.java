@@ -1,6 +1,7 @@
 package com.application.cart.controller;
 
 import com.application.cart.model.Cart;
+import com.application.cart.model.CartItem;
 import com.application.cart.security.TokenProvider;
 import com.application.cart.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,46 +22,51 @@ public class CartController {
     private final CartService cartService;
     private final TokenProvider tokenProvider;
 
-    @PostMapping( "/{productName}/{amount}" )
+    @PostMapping( "/create/{productName}/{amount}" )
     public void addProductToCart(@PathVariable String productName, @PathVariable Integer amount, HttpServletRequest request) {
         String token = "Bearer " + tokenProvider.getToken(request);
         cartService.addProductToCart(productName, tokenProvider.extractUser(request).getId(), amount, token);
     }
 
-
-    @GetMapping( "/all" )
-    @PreAuthorize( "hasRole('ROLE_ADMIN')" )
+    @GetMapping( "/cart/all" )
     public List<Cart> getAllCarts() {
         return cartService.getAllCarts();
     }
 
+    @GetMapping( "/cartItem/all" )
+    public List<CartItem> getAllCartItems() {
+        return cartService.getAllCartItems();
+    }
+
+
     @GetMapping( "/cart/get/{id}" )
-    @PreAuthorize( "hasRole('ROLE_ADMIN')" )
     public Cart getCartById(@PathVariable String id) {
         return cartService.getCartById(id);
     }
 
-    @GetMapping( "user/{userId}" )
-    @PreAuthorize( "hasRole('ROLE_ADMIN')" )
-    public List<Cart> getCartByUserId(@PathVariable Long userId) {
-        return cartService.getCartByUserId(userId);
+    @GetMapping( "/cartItem/get/{id}" )
+    public CartItem getCartItemById(@PathVariable String id) {
+        return cartService.findCartItemById(id);
     }
 
-    @GetMapping( "product/{productId}" )
-    @PreAuthorize( "hasRole('ROLE_ADMIN')" )
-    public List<Cart> getCartByProductId(@PathVariable Long productId) {
-        return cartService.getCartByProductId(productId);
+    @GetMapping( "cart/userId" )
+    public Cart getCartByUserId(HttpServletRequest request) {
+        return cartService.getCartByUserId(tokenProvider.extractUser(request).getId());
     }
-    @PostMapping("/{userId}")
-    @PreAuthorize( "hasRole('ROLE_ADMIN')" )
-    public void clearCartByUserId(@PathVariable Long userId) {
-        cartService.deleteCartByUserId(userId);
+
+    @PostMapping("/cartItem/clear/userId")
+    public void clearCartItemByUserId(HttpServletRequest request) {
+        cartService.clearCartItemByUserId(tokenProvider.extractUser(request).getId());
     }
 
     @PostMapping("/cart/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void clearCartById(@PathVariable String id) {
-        cartService.deleteCartById(id);
+        cartService.removeCartItemById(id);
     }
+
+//    @PostMapping("/cart/deleteAll")
+//    public void clearCartByUserId(HttpServletRequest request) {
+//        cartService.clearCart(tokenProvider.extractUser(request).getId());
+//    }
 
 }

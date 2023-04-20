@@ -3,22 +3,22 @@ version: '3.5'
 services:
   app:
     build: ./
-    container_name: 'oauth-app'
+    container_name: 'cart-app'
     ports:
-      - "8081:8081"
+      - "8083:8083"
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/oauthService
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=2301003120701
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_DATASOURCE_URL=mongodb://db:27017/cartService
 
   db:
-    image: mysql:5.7
+    image: mongo
     restart: always
-    environment:
-      MYSQL_DATABASE: 'oauthService'
-      MYSQL_ROOT_PASSWORD: '2301003120701'
+    container_name: mongodb
     ports:
-      - '3306:3306'
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=cartService
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
+

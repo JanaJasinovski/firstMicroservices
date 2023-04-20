@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,4 +64,12 @@ public class ProductServiceImpl implements ProductService {
                 .map(dtoConvert::convertProduct)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void updateProductAmount(Long productId, Long amount) {
+        Product product = productRepository.findById(productId).orElseThrow();
+        product.setAmount(amount);
+        productRepository.save(product);
+    }
+
 }

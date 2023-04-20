@@ -1,3 +1,5 @@
 FROM openjdk:17
-ADD /target/oauth-0.0.1-SNAPSHOT.jar .
-ENTRYPOINT ["java", "-jar", "oauth-0.0.1-SNAPSHOT.jar"]
+ADD /target/cart-0.0.1-SNAPSHOT.jar backendProduct.jar
+ARG PORT
+EXPOSE $PORT
+ENTRYPOINT ["java", "-jar", "backendProduct.jar"]

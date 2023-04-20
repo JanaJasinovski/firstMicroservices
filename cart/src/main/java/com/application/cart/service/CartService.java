@@ -1,16 +1,25 @@
 package com.application.cart.service;
 
-import com.application.cart.dto.CartDto;
 import com.application.cart.model.Cart;
+import com.application.cart.model.CartItem;
 
 import java.util.List;
 
 public interface CartService {
-    CartDto addProductToCart(String productName, Long userId, Integer amount, String token);
-    List<Cart> getAllCarts();
+    Cart getCartByUserId(Long userId);
+
+    CartItem findCartItemById(String cartItemId);
+
     Cart getCartById(String id);
-    List<Cart> getCartByUserId(Long id);
-    List<Cart> getCartByProductId(Long id);
-    void deleteCartByUserId(Long id);
-    void deleteCartById(String id);
+
+    List<CartItem> getAllCartItems();
+    void clearCart(Long userId);
+
+    CartItem addProductToCart(String productName, Long userId, Integer amount, String token);
+
+    void clearCartItemByUserId(Long userId);
+
+    void removeCartItemById(String cartItemId);
+
+    List<Cart> getAllCarts();
 }

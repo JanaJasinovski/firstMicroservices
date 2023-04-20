@@ -1,17 +1,25 @@
-version: '3'
+version: '3.5'
 
 services:
-  mysql:
-    image: mysql:8.0.28
-    container_name: 'java-mysql'
-    environment:
-      - MYSQL_ROOT_PASSWORD=2301003120701
-      - MYSQL_DATABASE=oauthService
-      - MYSQL_PASSWORD=2301003120701
-
   app:
     build: ./
-    container_name: 'java-app'
+    container_name: 'product-app'
     ports:
-      - "8081:8081"
+      - "8082:8082"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/productService
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=2301003120701
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
+  postgres:
+    image: 'postgres:15'
+    container_name: 'java-postgres'
+    environment:
+      - 'POSTGRES_PASSWORD=2301003120701'
+      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_DB=productService'
+    ports:
+      - "5432:5432"

@@ -1,10 +1,9 @@
 package com.application.cart.repository;
 
-import com.application.cart.model.CartItem;
+import com.application.cart.model.Cart;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CartItemRepository extends MongoRepository<CartItem, String> {
-
+public interface CartRepository extends MongoRepository<Cart, String> {
 }
