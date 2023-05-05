@@ -6,23 +6,27 @@ import com.application.cart.model.Cart;
 import com.application.cart.model.CartItem;
 import com.application.cart.repository.CartItemRepository;
 import com.application.cart.repository.CartRepository;
+import com.application.cart.service.CartItemService;
 import com.application.cart.service.CartService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
-
+    private static final String CART_ITEM = "CART_ITEM";
+    private static final String CART = "CART";
+    private final CartItemService cartItemService;
+    private final ProductClient productClient;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final CartItemRepository cartItemRepository;
     private final CartRepository cartRepository;
-    private final ModelMapper modelMapper;
-    private final ProductClient productClient;
 
     @Override
     public CartItem addProductToCart(String productName, Long userId, Integer amount, String token) {
@@ -30,51 +34,36 @@ public class CartServiceImpl implements CartService {
 
         Cart cart = this.getCartByUserId(userId);
 
-        CartItem cartItem = cart.findCartItemByProductIdAndUserId(product.getId(), userId); //new CartItem(userId, product.getId(), amount, new BigDecimal(product.getPrice().intValue() * amount));
+        CartItem cartItem = cart.findCartItemByProductIdAndUserId(product.getId(), userId);
 
-        if(product.getAmount() <= 0 || product.getAmount() - amount <=0 ) {
-            System.out.println("Too little products");
-        }
-
-        if(cartItem != null) {
+        if (cartItem != null) {
             cartItem.setUserId(userId);
             cartItem.setProductId(product.getId());
             cartItem.setAmount(amount);
             cartItem.setProductPrice(new BigDecimal(product.getPrice().intValue() * amount));
             cartItem = cartItemRepository.save(cartItem);
+
+            redisTemplate.opsForHash().put(CART_ITEM, cartItem.getId(), cartItem);
+
         } else {
             cartItem = new CartItem();
+            cartItem.setId(UUID.randomUUID().toString());
             cartItem.setUserId(userId);
             cartItem.setProductId(product.getId());
             cartItem.setAmount(amount);
             cartItem.setProductPrice(new BigDecimal(product.getPrice().intValue() * amount));
-            cartItem = cartItemRepository.save(cartItem);
+            cart.setCartItems(Collections.singletonList(cartItem));
+//            cartRepository.save(cart);
+//            cartItem = cartItemRepository.save(cartItem);
+            redisTemplate.opsForHash().put(CART_ITEM, cartItem.getId(), cartItem);
         }
-
-        productClient.updateProductAmount(token, product.getId(), product.getAmount() - amount);
 
         return cartItem;
     }
 
     @Override
-    public  List<CartItem> getAllCartItems() {
-        return cartItemRepository.findAll();
-    }
-
-
-    @Override
-    public void clearCartItemByUserId(Long userId) {
-        cartItemRepository.deleteByUserId(userId);
-    }
-
-    @Override
-    public void removeCartItemById(String cartItemId) {
-        cartItemRepository.deleteById(cartItemId);
-    }
-
-    @Override
     public List<Cart> getAllCarts() {
-        return cartRepository.findAll();
+        return (List<Cart>) redisTemplate.opsForHash().entries(CART);
     }
 
     @Override
@@ -82,22 +71,23 @@ public class CartServiceImpl implements CartService {
         return Cart.builder()
                 .id(UUID.randomUUID().toString())
                 .userId(userId)
-                .cartItems(cartItemRepository.findAllByUserId(userId))
+                .cartItems(cartItemService.getCartItemsByUserId(userId))
                 .build();
     }
 
     @Override
-    public CartItem findCartItemById(String cartItemId) {
-        return cartItemRepository.findById(cartItemId).orElseThrow();
-    }
-
-    @Override
-    public Cart getCartById(String id) {
-        return cartRepository.findById(id).orElseThrow();
+    public Cart getCartById(Long id) {
+        return (Cart) redisTemplate.opsForHash().get(CART, id);
     }
 
     @Override
     public void clearCart(Long userId) {
-        cartItemRepository.deleteAllByUserId(userId);
+        redisTemplate.opsForHash().delete(CART, userId);
     }
+
+    @Override
+    public void clearAllCart() {
+        redisTemplate.delete(CART);
+    }
+
 }

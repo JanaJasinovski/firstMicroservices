@@ -35,6 +35,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductDto findById(Long id) {
+        return dtoConvert.convertProduct(productRepository.findById(id).orElseThrow(() ->
+                new ProductNotFoundException("Product not found with id: " + id)));
+    }
+
+    @Override
     public List<ProductDto> findByPriceBetween(BigDecimal startPrice, BigDecimal endPrice) {
         return productRepository.findByPriceBetween(startPrice, endPrice).stream().map(dtoConvert::convertProduct).collect(Collectors.toList());
     }

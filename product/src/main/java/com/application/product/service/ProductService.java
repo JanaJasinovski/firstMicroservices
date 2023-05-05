@@ -8,6 +8,7 @@ import java.util.List;
 public interface ProductService {
     void createProduct(ProductDto productDTO, Long userId);
     ProductDto findByName(String name);
+    ProductDto findById(Long id);
     List<ProductDto> findByPriceBetween(BigDecimal startPrice, BigDecimal endPrice);
     List<ProductDto> findByAmount(Long amount);
     List<ProductDto> findProductByNameAndPriceBetween(String name, BigDecimal startPrice, BigDecimal endPrice);

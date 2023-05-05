@@ -38,7 +38,7 @@ spec:
             - name: MYSQL_DATABASE  # Setting Database name
               value: oauthService
             - name: MYSQL_ROOT_PASSWORD # Setting Database password
-              value: "2301003120701"
+              value: "root"
           ports:
             - containerPort: 3306
               name: mysql
@@ -87,6 +87,6 @@ spec:
             - name: SPRING_DATASOURCE_USERNAME
               value: root
             - name: SPRING_DATASOURCE_PASSWORD
-              value: "2301003120701"
+              value: "root"
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update

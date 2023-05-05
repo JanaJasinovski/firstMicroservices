@@ -21,23 +21,23 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table( name = "users" )
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Long id;
 
-    @Column(name = "username",  unique = true, nullable = false, length = 100)
+    @Column( name = "username", unique = true, nullable = false, length = 100 )
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column( name = "password", nullable = false )
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER  , cascade = CascadeType.PERSIST)
-    @JoinTable(name = "user_roles",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    @ManyToMany( fetch = FetchType.EAGER, cascade = CascadeType.PERSIST )
+    @JoinTable( name = "user_roles",
+            joinColumns = {@JoinColumn( name = "user_id", referencedColumnName = "id" )},
+            inverseJoinColumns = {@JoinColumn( name = "role_id", referencedColumnName = "id" )} )
     private List<Role> roles = new ArrayList<>();
 }

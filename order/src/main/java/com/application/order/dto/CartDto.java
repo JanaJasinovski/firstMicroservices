@@ -1,10 +1,10 @@
-package com.application.cart.dto;
+package com.application.order.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -12,7 +12,5 @@ import java.math.BigDecimal;
 public class CartDto {
     private String cartId;
     private Long userId;
-    private Long productId;
-    private Integer amount;
-    private BigDecimal totalPrice;
+    private List<CartItemDto> cartItems;
 }

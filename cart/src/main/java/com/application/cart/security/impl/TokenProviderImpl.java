@@ -1,6 +1,5 @@
 package com.application.cart.security.impl;
 
-
 import com.application.cart.dto.UserDto;
 import com.application.cart.security.TokenProvider;
 import io.jsonwebtoken.Claims;
@@ -10,8 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -33,6 +30,25 @@ public class TokenProviderImpl implements TokenProvider {
     public UserDto extractUser(HttpServletRequest request) {
         Key key = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
         String token = getToken(request);
+        if (validateToken(token)) {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            List<String> roles = claims.get("roles", List.class);
+            Long userId = claims.get("userId", Long.class);
+            String username = claims.getSubject();
+            return new UserDto(userId, username, roles.get(0));
+
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public UserDto extractUserFromToken(String token) {
+        Key key = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
         if (validateToken(token)) {
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(key)

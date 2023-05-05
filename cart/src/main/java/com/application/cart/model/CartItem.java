@@ -3,31 +3,26 @@ package com.application.cart.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Document( collection = "cart_item" )
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class CartItem {
-    @Id
+@RedisHash( "CART_ITEM" )
+public class CartItem implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 5811817633994165060L;
     private String id;
-    @JsonIgnore
     private Long userId;
     private Long productId;
     private Integer amount;
     private BigDecimal productPrice;
 
-    public CartItem(Long userId, Long productId, Integer amount, BigDecimal productPrice) {
-        this.userId = userId;
-        this.productId = productId;
-        this.amount = amount;
-        this.productPrice = productPrice;
-    }
 }

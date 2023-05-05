@@ -3,25 +3,20 @@ package com.application.cart.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serializable;
 import java.util.List;
 
-@Document( collection = "cart" )
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Getter
-@Setter
 @Builder
-public class Cart {
-    @Id
+@RedisHash("CART")
+public class Cart implements Serializable {
     private String id;
     private Long userId;
     private List<CartItem> cartItems;

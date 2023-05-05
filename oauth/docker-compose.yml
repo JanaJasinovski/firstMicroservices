@@ -1,4 +1,4 @@
-version: '3.5'
+version: "3.8"
 
 services:
   app:
@@ -11,7 +11,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/oauthService
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=2301003120701
+      - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   db:
@@ -19,6 +19,13 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: 'oauthService'
-      MYSQL_ROOT_PASSWORD: '2301003120701'
+      MYSQL_ROOT_PASSWORD: 'root'
     ports:
-      - '33064:3306'
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+
+volumes:
+  my-db:

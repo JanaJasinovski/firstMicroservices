@@ -11,15 +11,17 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/productService
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=2301003120701
+      - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   postgres:
-    image: 'postgres:15'
-    container_name: 'java-postgres'
+    image: 'postgres:15.2'
+    container_name: 'postgres'
     environment:
-      - 'POSTGRES_PASSWORD=2301003120701'
-      - 'POSTGRES_USER=postgres'
-      - 'POSTGRES_DB=productService'
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: productService
     ports:
       - "5432:5432"
+    expose:
+      - '5432'

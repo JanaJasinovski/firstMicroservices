@@ -1,0 +1,24 @@
+version: '3.5'
+
+services:
+  app:
+    build: ./
+    container_name: 'order-app'
+    ports:
+      - "8084:8084"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=mongodb://db:27017/orderService
+
+  db:
+    image: mongo
+    restart: always
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=orderService
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
+

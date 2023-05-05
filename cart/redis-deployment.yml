@@ -1,49 +1,42 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb
+  name: redis
   labels:
-    app: mongodb
+    app: redis
 spec:
   type: LoadBalancer
   selector:
-    app: mongodb
+    app: redis
   ports:
     - protocol: TCP
-      port: 27017
+      port: 6379
       name: http
 
 ---
 apiVersion: apps/v1 # for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
 kind: Deployment
 metadata:
-  name: mongodb
+  name: redis
   labels:
-    app: mongodb
+    app: redis
 spec:
   selector:
     matchLabels:
-      app: mongodb
+      app: redis
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mongodb
+        app: redis
     spec:
       containers:
-        - image: mongo
-          name: mongodb
-          env:
-            - name: MONGO_INITDB_DATABASE  # Setting Database name
-              value: cartService
-            - name: MONGO_INITDB_ROOT_USERNAME # Setting Database password
-              value:
-            - name: MONGO_INITDB_ROOT_PASSWORD # Setting Database password
-              value:
+        - image: redis
+          name: redis
           ports:
-            - containerPort: 27017
-              name: mongo
+            - containerPort: 6379
+              name: redis
 
 ---
 apiVersion: v1
@@ -81,13 +74,4 @@ spec:
           image: cart:0.0.1
           ports:
             - containerPort: 8083
-          env:
-            - name: SPRING_DATASOURCE_URL  # Setting Database name
-              value: mongodb://mongodb:27017/cartService
-            - name: MONGO_INITDB_ROOT_USERNAME
-              value:
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              value:
-            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
 

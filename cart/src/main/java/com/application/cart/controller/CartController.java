@@ -1,12 +1,11 @@
 package com.application.cart.controller;
 
 import com.application.cart.model.Cart;
-import com.application.cart.model.CartItem;
 import com.application.cart.security.TokenProvider;
 import com.application.cart.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,25 +27,19 @@ public class CartController {
         cartService.addProductToCart(productName, tokenProvider.extractUser(request).getId(), amount, token);
     }
 
+    @GetMapping( "/cartId" )
+    public String getCartId(HttpServletRequest request) {
+        return cartService.getCartByUserId(tokenProvider.extractUser(request).getId()).getId();
+    }
+
     @GetMapping( "/cart/all" )
     public List<Cart> getAllCarts() {
         return cartService.getAllCarts();
     }
 
-    @GetMapping( "/cartItem/all" )
-    public List<CartItem> getAllCartItems() {
-        return cartService.getAllCartItems();
-    }
-
-
     @GetMapping( "/cart/get/{id}" )
-    public Cart getCartById(@PathVariable String id) {
+    public Cart getCartById(@PathVariable Long id) {
         return cartService.getCartById(id);
-    }
-
-    @GetMapping( "/cartItem/get/{id}" )
-    public CartItem getCartItemById(@PathVariable String id) {
-        return cartService.findCartItemById(id);
     }
 
     @GetMapping( "cart/userId" )
@@ -54,19 +47,9 @@ public class CartController {
         return cartService.getCartByUserId(tokenProvider.extractUser(request).getId());
     }
 
-    @PostMapping("/cartItem/clear/userId")
-    public void clearCartItemByUserId(HttpServletRequest request) {
-        cartService.clearCartItemByUserId(tokenProvider.extractUser(request).getId());
+    @DeleteMapping("cart/clear")
+    public void clearCart() {
+        cartService.clearAllCart();
     }
-
-    @PostMapping("/cart/{id}")
-    public void clearCartById(@PathVariable String id) {
-        cartService.removeCartItemById(id);
-    }
-
-//    @PostMapping("/cart/deleteAll")
-//    public void clearCartByUserId(HttpServletRequest request) {
-//        cartService.clearCart(tokenProvider.extractUser(request).getId());
-//    }
 
 }
