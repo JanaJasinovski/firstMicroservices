@@ -1,0 +1,9 @@
+<div class="app-wrapper">
+  <ng-container *ngIf="currentUser.userId">
+    <app-header (logOutChange)="logOut()"></app-header>
+  </ng-container>
+  <div class="app-wrapper__body">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

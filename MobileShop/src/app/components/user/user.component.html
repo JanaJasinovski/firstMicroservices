@@ -1,0 +1,17 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{modal_title}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+  </div>
+<div class="modal-body">
+    <div class="d-flex flex-row align-items-center mb-4">
+        <div class="form-outline flex-fill mb-0">
+    <ng-container *ngFor="let user of users">
+        <div>
+            <td>
+                <p>{{ user.sub }}</p>
+            </td>
+        </div>
+    </ng-container>
+    </div>
+    </div>
+  </div>

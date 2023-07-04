@@ -5,13 +5,17 @@ import com.application.cart.security.TokenProvider;
 import com.application.cart.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -21,10 +25,10 @@ public class CartController {
     private final CartService cartService;
     private final TokenProvider tokenProvider;
 
-    @PostMapping( "/create/{productName}/{amount}" )
-    public void addProductToCart(@PathVariable String productName, @PathVariable Integer amount, HttpServletRequest request) {
+    @PostMapping( "/cart/create" )
+    public void addProductToCart(@RequestParam("name") String name, HttpServletRequest request) {
         String token = "Bearer " + tokenProvider.getToken(request);
-        cartService.addProductToCart(productName, tokenProvider.extractUser(request).getId(), amount, token);
+        cartService.addProductToCart(name, tokenProvider.extractUser(request).getId(), token);
     }
 
     @GetMapping( "/cartId" )
@@ -52,4 +56,13 @@ public class CartController {
         cartService.clearAllCart();
     }
 
+    @GetMapping("/totalQuaninty")
+    public Integer getTotalQuantity(HttpServletRequest request) {
+        return cartService.getTotalQuantity(tokenProvider.extractUser(request).getId());
+    }
+
+    @GetMapping("/totalPrice")
+    public BigDecimal getTotalPrice(HttpServletRequest request) {
+        return cartService.getTotalPrice(tokenProvider.extractUser(request).getId());
+    }
 }

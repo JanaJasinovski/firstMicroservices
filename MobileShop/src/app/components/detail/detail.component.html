@@ -1,0 +1,20 @@
+<div class="gallery">
+    <div class="cards-container">
+            <div class="card">
+                <div class="card__image">
+                    <img src="{{ product.picture }}">
+                </div>
+
+                <p class="card__title">{{ product.name}}</p>
+                <h6 class="card__price">{{ product.price | currency:'USD'}}</h6>
+        
+                <button (click)="addToCart(product.name)"  class="card__to-cart">Add to cart</button>
+                <div></div>
+                <a routerLink="/products" class="mt-5">Back to Product List</a>
+            </div>
+    </div>
+</div>
+
+<div>
+    <app-commentar></app-commentar>
+</div>

@@ -9,8 +9,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableFeignClients
 @EnableMongoRepositories
 public class OrderApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(OrderApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(OrderApplication.class, args);
+    }
 
-	}
 }

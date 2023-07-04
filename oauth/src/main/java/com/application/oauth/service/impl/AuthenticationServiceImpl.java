@@ -3,7 +3,6 @@ package com.application.oauth.service.impl;
 import com.application.oauth.dto.BearerToken;
 import com.application.oauth.dto.LoginDto;
 import com.application.oauth.dto.RegisterDto;
-import com.application.oauth.dto.UserDto;
 import com.application.oauth.exception.RolenameNotFoundException;
 import com.application.oauth.model.Role;
 import com.application.oauth.model.RoleEnum;
@@ -13,7 +12,6 @@ import com.application.oauth.repository.UserRepository;
 import com.application.oauth.security.TokenProvider;
 import com.application.oauth.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,8 +30,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ModelMapper modelMapper;
-
     private final TokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
 
@@ -41,30 +37,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public String login(LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginDto.getUsername(),
+                        loginDto.getSub(),
                         loginDto.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         List<String> rolesNames = new ArrayList<>();
         user.getRoles().forEach(r -> rolesNames.add(r.getRoleName()));
-        return tokenProvider.generateToken(user.getUsername(), rolesNames);
+        return tokenProvider.generateToken(user.getEmail(), rolesNames);
     }
 
     @Override
     public BearerToken register(RegisterDto registerDto) {
-        if (userRepository.existsByUsername(registerDto.getUsername())) {
-            throw new UsernameNotFoundException("User already exists with username: " + registerDto.getUsername());
+        if (userRepository.existsByEmail(registerDto.getSub())) {
+            throw new UsernameNotFoundException("User already exists with email: " + registerDto.getSub());
         } else {
             User user = new User();
-            user.setUsername(registerDto.getUsername());
+            user.setEmail(registerDto.getSub());
+            user.setFirstName(registerDto.getFirstName());
+            user.setLastName(registerDto.getLastName());
             user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
             Role role = roleRepository.findByName(RoleEnum.USER).orElseThrow(() -> new RolenameNotFoundException("Role name not found"));
             user.setRoles(Collections.singletonList(role));
             userRepository.save(user);
-            String token = tokenProvider.generateToken(registerDto.getUsername(), Collections.singletonList(role.getRoleName()));
+            String token = tokenProvider.generateToken(registerDto.getSub(), Collections.singletonList(role.getRoleName()));
             return new BearerToken(token, "Bearer ");
         }
     }
+
 }

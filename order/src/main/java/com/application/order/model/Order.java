@@ -1,10 +1,15 @@
 package com.application.order.model;
 
+import com.application.order.dto.AddressDto;
 import com.application.order.dto.CartItemDto;
+import com.application.order.dto.UserDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.Id;
@@ -18,6 +23,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Builder
 public class Order {
     @Id
@@ -30,10 +36,10 @@ public class Order {
     private String orderStatus;
 
     @CreationTimestamp
-    private Date dateCreated;
+    private String dateCreated;
 
     @UpdateTimestamp
-    private Date deliveredDate;
+    private String deliveredDate;
 
     private Long userId;
 

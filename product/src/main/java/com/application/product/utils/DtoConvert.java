@@ -12,6 +12,10 @@ public class DtoConvert {
     private final ModelMapper modelMapper;
 
     public ProductDto convertProduct(Product product) {
-        return modelMapper.map(product, ProductDto.class);
+
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        productDto.setCategoryName(product.getCategory().getCategoryName());
+
+        return productDto;
     }
 }

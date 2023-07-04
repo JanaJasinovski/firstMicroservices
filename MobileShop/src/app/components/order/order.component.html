@@ -1,0 +1,12 @@
+<div class="gallery">
+    <div class="cards-container">
+        <ng-container *ngFor="let order of orders">
+            <app-single-order [order]="order"></app-single-order>
+        </ng-container>
+        <ng-container *ngIf="openedOrder.id">
+            <app-order-items></app-order-items>
+        </ng-container>
+
+
+    </div>
+</div>

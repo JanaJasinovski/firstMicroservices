@@ -1,6 +1,7 @@
 package com.application.order.client;
 
 import com.application.order.dto.CartItemDto;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ public interface CartItemClient {
 
     @GetMapping( "/cartItem/userId" )
     List<CartItemDto> getCartItemByUserId(@RequestHeader( HttpHeaders.AUTHORIZATION) String token);
-    @DeleteMapping("/cartItem/clear/userId")
-    void clearCartItemByUserId(@RequestHeader( HttpHeaders.AUTHORIZATION) String token);
+
+    @DeleteMapping("/cartItem/deleteAll")
+    void clearCartItemsByUserId(@RequestHeader( HttpHeaders.AUTHORIZATION) String token);
 }

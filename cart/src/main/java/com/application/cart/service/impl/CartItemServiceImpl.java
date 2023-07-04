@@ -40,13 +40,34 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public void clearCartItemByUserId(Long userId) {
-        redisTemplate.opsForHash().delete(CART_ITEM, userId);
-
+        String userIdKey = "userId:" + userId;
+        redisTemplate.opsForHash().delete(CART_ITEM, userIdKey);
     }
 
     @Override
-    public void removeCartItemById(String cartItemId) {
+    public List<CartItem> removeCartItemById(String cartItemId, Long userId) {
         redisTemplate.opsForHash().delete(CART_ITEM, cartItemId);
+        return getCartItemsByUserId(userId);
+    }
+
+    @Override
+    public List<CartItem> removeAll(Long userId) {
+        List<String> keys = new ArrayList<>();
+        List<CartItem> products = redisTemplate.opsForHash().values(CART_ITEM).stream()
+                .map(obj -> (CartItem) obj)
+                .toList();
+
+        List<CartItem> cartItems = products.stream()
+                .filter(product -> product.getUserId().equals(userId))
+                .toList();
+
+        for (CartItem cartItem : cartItems) {
+            keys.add(cartItem.getId());
+        }
+        String[] keysArray = keys.toArray(new String[keys.size()]);
+
+        redisTemplate.opsForHash().delete(CART_ITEM, keysArray);
+        return getCartItemsByUserId(userId);
     }
 
     @Override
@@ -61,6 +82,63 @@ public class CartItemServiceImpl implements CartItemService {
                 .toList();
     }
 
+    @Override
+    public List<CartItem> incrementAmount(Long userId, String name) {
+        List<CartItem> products = redisTemplate.opsForHash().values(CART_ITEM).stream()
+                .map(obj -> (CartItem) obj)
+                .toList();
+
+        List<CartItem> cartItems = products.stream()
+                .filter(product -> product.getUserId().equals(userId))
+                .toList();
+
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getProductName().equals(name)) {
+                cartItem.setAmount(cartItem.getAmount() + 1);
+                redisTemplate.opsForHash().put(CART_ITEM, cartItem.getId(), cartItem);
+            }
+        }
+
+        return cartItems;
+    }
+
+    @Override
+    public List<CartItem> decrementAmount(Long userId, String productName) {
+        List<CartItem> products = redisTemplate.opsForHash().values(CART_ITEM).stream()
+                .map(obj -> (CartItem) obj)
+                .toList();
+
+        List<CartItem> cartItems = products.stream()
+                .filter(product -> product.getUserId().equals(userId))
+                .toList();
+
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getProductName().equals(productName)) {
+                cartItem.setAmount(cartItem.getAmount() - 1);
+                redisTemplate.opsForHash().put(CART_ITEM, cartItem.getId(), cartItem);
+            }
+        }
+        return cartItems;
+
+    }
+
+    @Override
+    public List<CartItem> totalPrice(Long userId) {
+        List<CartItem> products = redisTemplate.opsForHash().values(CART_ITEM).stream()
+                .map(obj -> (CartItem) obj)
+                .toList();
+
+        List<CartItem> cartItems = products.stream()
+                .filter(product -> product.getUserId().equals(userId))
+                .toList();
+
+        for (CartItem cartItem : cartItems) {
+            cartItem.setAmount(cartItem.getProductPrice().intValue() * cartItem.getAmount());
+            redisTemplate.opsForHash().put(CART_ITEM, cartItem.getId(), cartItem);
+        }
+
+        return cartItems;
+    }
 
     @Override
     public CartItem findCartItemById(Long cartItemId) {

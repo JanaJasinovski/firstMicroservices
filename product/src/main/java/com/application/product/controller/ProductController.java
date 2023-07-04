@@ -1,21 +1,17 @@
 package com.application.product.controller;
 
 import com.application.product.dto.ProductDto;
+import com.application.product.kafka.KafkaProducer;
+import com.application.product.model.Product;
 import com.application.product.security.TokenProvider;
 import com.application.product.service.ProductService;
-import com.application.product.utils.DtoConvert;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,20 +21,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
+@CrossOrigin()
 @RestController
 @RequestMapping( "/products" )
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
     private final TokenProvider tokenProvider;
+    private final KafkaProducer kafkaProducer;
+
+    @GetMapping("/moveDataToKafka")
+    public void moveDataToKafka() {
+        List<ProductDto> products = productService.getAll();
+        kafkaProducer.sendData(products);
+    }
+
+    @GetMapping( "/search" )
+    public Product getProductByName(@RequestParam( "name" ) String name) {
+        return productService.getProductByName(name);
+    }
 
     @PostMapping( "/create" )
-    public void addProduct(@RequestBody ProductDto productDto, HttpServletRequest request) {
-        productService.createProduct(productDto, tokenProvider.extractUser(request).getId());
+    public Product addProduct(@RequestBody ProductDto productDto, HttpServletRequest request, Pageable pageable) {
+        String token = "Bearer " + tokenProvider.getToken(request);
+        return productService.createProduct(productDto, tokenProvider.extractUser(request).getId(), token);
     }
 
     @GetMapping( "/all" )
@@ -46,40 +55,22 @@ public class ProductController {
         return productService.getAll();
     }
 
-    @GetMapping( "/productID/{id}" )
-    public ProductDto getProductById(@PathVariable Long id) {
+    @GetMapping( "/product/id/{id}" )
+    public Product getProductById(@PathVariable Long id) {
         return productService.findById(id);
     }
-    @GetMapping( "/productName/{name}" )
-    public ProductDto getProductByName(@PathVariable String name) {
-        return productService.findByName(name);
+
+    @GetMapping( "/search/findByCategoryId" )
+    public Page<Product> getByCategoryId(@Param( "id" ) Long id, Pageable pageable) {
+        return productService.findByCategoryId(id, pageable);
     }
 
-    @GetMapping( "/{name}/{startPrice}/{endPrice}" )
-    public List<ProductDto> getProductByNameAndPriceBetween(@PathVariable String name, @PathVariable BigDecimal startPrice, @PathVariable BigDecimal
-            endPrice) {
-        return productService.findProductByNameAndPriceBetween(name, startPrice, endPrice);
+    @DeleteMapping( "/delete/product/userId" )
+    public Page<Product> deleteProduct(@Param( "productId" ) Long productId, HttpServletRequest request, Pageable pageable) {
+        return  productService.deleteProductIfAdmin(productId, tokenProvider.extractUser(request).getId(), pageable);
     }
 
-    @GetMapping( "/{startPrice}/{endPrice}" )
-    public List<ProductDto> getProductPriceBetween(@PathVariable BigDecimal startPrice, @PathVariable BigDecimal
-            endPrice) {
-        return productService.findByPriceBetween(startPrice, endPrice);
-    }
-
-    @GetMapping( "/all/{amount}/{startPrice}/{endPrice}" )
-    public List<ProductDto> getProductByAmount(@PathVariable Long amount, @PathVariable BigDecimal startPrice, @PathVariable BigDecimal
-            endPrice) {
-        return productService.getProductByAmountAndPriceBetween(amount, startPrice, endPrice);
-    }
-
-    @GetMapping( "/all/{amount}" )
-    public List<ProductDto> getProductByAmountAndPriceBetween(@PathVariable Long amount, @PathVariable BigDecimal startPrice, @PathVariable BigDecimal
-            endPrice) {
-        return productService.findByAmount(amount);
-    }
-
-    @PutMapping("/product/update/{productId}/{amount}")
+    @PutMapping( "/product/update/{productId}/{amount}" )
     public void updateProductAmount(@PathVariable Long productId, @PathVariable Long amount) {
         productService.updateProductAmount(productId, amount);
     }

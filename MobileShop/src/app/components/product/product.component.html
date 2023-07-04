@@ -1,0 +1,51 @@
+<div class="gallery">
+    <div class="cards-container">
+        <ng-container *ngFor="let tempProduct of products">
+            <div class="card">
+                <div class="card__image">
+                    <a routerLink="/products/{{ tempProduct.id }}">
+                    <img src="{{ tempProduct.picture }}">
+                    </a>
+                </div>
+                <a routerLink="/products/{{ tempProduct.id }}">
+                <p class="card__title">{{ tempProduct.name}}</p>
+                </a>
+                <h6 class="card__price">{{ tempProduct.price | currency:'USD'}}</h6>
+                <h6 class="card__price">In amount: {{tempProduct.amount}}</h6>
+                <div class="card__stars">
+                    <div class="star" *ngFor="let star of stars">
+                        <i [class]="star.class"></i>
+                    </div>
+                </div>
+                <button (click)="addToCart(tempProduct.name)" class="card__to-cart">To Cart</button>
+                <button *ngIf="isAdmin()" (click)="deleteProduct(tempProduct.id)" class="card__to-cart">Remove</button>
+            </div>
+        </ng-container>
+        <div class="fixed-div">
+            <div class="row">
+                <div class="col-md-9">
+                
+                    <ngb-pagination [(page)]="thePageNumber"
+                                    [pageSize]="thePageSize"
+                                    [collectionSize]="theTotalElements"
+                                    [maxSize]="5"
+                                    (pageChange)="listProducts()">
+            
+                    </ngb-pagination>
+            
+                </div>
+            </div>
+            <span class="mr-2">Page Size</span>
+        
+            <select #myPageSelect (change)="updatePageSize(myPageSelect.value)">
+                <option>2</option>
+                <option selected="true">5</option>
+                <option>10</option>
+                <option>20</option>
+                <option>50</option>
+            </select>
+        </div>
+        
+    </div>
+    
+</div>

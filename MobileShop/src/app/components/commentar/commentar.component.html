@@ -1,0 +1,17 @@
+<div class="container">
+  <h2>Comments</h2>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="message">Оставить комментраий</label>
+        <textarea class="form-control" id="message" rows="3" [(ngModel)]="message"></textarea>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-primary" (click)="addComment(message)">Add Comment</button>
+  <hr>
+  <div *ngFor="let comment of comments">
+    <h4>{{ comment.username }}</h4><h6> {{comment.commentarDate}}</h6>
+    <p>{{ comment.text }}</p>
+  </div>
+</div>

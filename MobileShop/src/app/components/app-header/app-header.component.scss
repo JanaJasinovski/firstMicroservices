@@ -1,0 +1,45 @@
+.header {
+    width: 100vw;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px;
+    background-color: white;
+    border-bottom: 1px solid black;
+
+    &__logo {
+        width: fit-content;
+    }
+
+    &__nav-menu {
+        width: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        list-style: none;
+        gap: inherit;
+
+        .nav-link {}
+    }
+
+    &__user-info {
+        width: fit-content;
+    }
+
+}
+
+.welcome-container {
+    text-align: center;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .greeting {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+  }

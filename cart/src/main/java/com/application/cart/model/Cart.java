@@ -3,12 +3,11 @@ package com.application.cart.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -19,6 +18,8 @@ import java.util.List;
 public class Cart implements Serializable {
     private String id;
     private Long userId;
+    private Integer totalQuantity;
+    private BigDecimal totalPrice;
     private List<CartItem> cartItems;
 
     public Cart(Long userId, List<CartItem> cartItems) {
@@ -34,4 +35,5 @@ public class Cart implements Serializable {
         }
         return null;
     }
+
 }

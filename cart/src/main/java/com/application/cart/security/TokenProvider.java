@@ -7,5 +7,4 @@ public interface TokenProvider {
     UserDto extractUser(HttpServletRequest request);
     String getToken(HttpServletRequest httpServletRequest);
     boolean validateToken(String token);
-    UserDto extractUserFromToken(String token);
 }

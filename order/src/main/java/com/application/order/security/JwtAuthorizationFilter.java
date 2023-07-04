@@ -28,7 +28,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (userDto != null) {
                 UserPrincipal userPrincipal = UserPrincipal.builder()
-                        .username(userDto.getUsername())
+                        .email(userDto.getEmail())
                         .id(userDto.getId())
                         .roles(Collections.singletonList(userDto.getRole()))
                         .build();

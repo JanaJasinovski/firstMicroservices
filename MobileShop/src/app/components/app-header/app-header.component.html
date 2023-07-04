@@ -1,0 +1,21 @@
+<div class="header">
+    <a href="/profile" class="header__logo">Mobile phones</a> 
+    <div style="text-align: center;padding: 20px; background-color: #f2f2f2; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <span style="font-size: 28px; color: #333; margin-bottom: 10px;">Welcome, {{this.currentUser.sub}}</span>
+    </div>
+    <ul class="header__nav-menu">
+        <ng-container *ngFor="let link of navLinks">
+            <button  type="button" class="btn btn-primary"  [routerLink]="link.routerLink">{{ link.name }}</button>
+        </ng-container>
+        <li class="nav-item">
+        <button  type="button" class="padded-nav-button btn navbar-btn btn-warning"> 
+            <span class="fa fa-sign-out-alt"></span>
+            <a (click)="logOut()" routerLinkActive="active" class="nav-link" style="cursor: pointer;">Sign Out</a>
+        </button>
+        </li>
+        <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" *ngIf="isAdmin()" (click)="open()">Create a new product
+        </button>
+        <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" *ngIf="isAdmin()" (click)="openUser()">User management
+        </button>
+    </ul>
+</div>

@@ -1,0 +1,21 @@
+<div class="card">
+    <div class="inner-box">
+        <div class="card-front">
+            <h2>Registration</h2>
+            <img
+            id="profile-img"
+            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+            class="profile-img-card"
+          />
+            <form #f="ngForm" (ngSubmit)="f.form.valid && register()">
+                <input type="email" class="input-box" placeholder="Enter email" id="email" name="email" [(ngModel)]="user.sub" #email="ngModel" required>
+                <input type="firstName" class="input-box" placeholder="Enter first name" id="firstName" name="firstName" [(ngModel)]="user.firstName" #email="ngModel" required>
+                <input type="lastName" class="input-box" placeholder="Enter last name" id="lastName" name="lastName" [(ngModel)]="user.lastName" #email="ngModel" required>
+                <input type="password" class="input-box" placeholder="Enter password" id="password" name="password" [(ngModel)]="user.password" #password="ngModel" required>
+                <button type="submit" class="submit-btn">Submit</button>
+                <input type="checkbox"><span>Remember Me</span>
+            </form>
+            <button type="button" class="btn" (click)="regirectToLogin()">I've an account</button>
+        </div>
+    </div>
+</div>

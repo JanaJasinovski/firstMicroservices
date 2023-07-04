@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{modal_title}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+  </div>
+<div class="modal-body">
+    <div class="d-flex flex-row align-items-center mb-4">
+        <div class="form-outline flex-fill mb-0">
+    <ng-container *ngFor="let orderItem of order.cartItems">
+        <div>
+            <td>
+                <img src="{{ orderItem.picture }}" class="img-responsive" width="150px" />
+            </td>
+            <td>
+                <p>{{ orderItem.productName }}</p>
+                <p>{{ orderItem.productPrice | currency: 'USD' }}</p>
+            </td>
+            <td>
+                <div class="items">
+                    <label>Quantity:</label>
+        
+                    <div class="row no-gutters">
+                    
+        
+                        <div class="col ml-4 mr-2">
+                            {{ orderItem.amount }}
+                        </div>
+        
+                
+        
+                        <div class="col-8"></div>
+                    </div>
+        
+                </div>
+        
+                <p class="mt-2">Subtotal: {{ orderItem.amount * orderItem.productPrice | currency: 'USD' }}</p>
+            </td>
+        </div>
+    </ng-container>
+    </div>
+    </div>
+  </div>

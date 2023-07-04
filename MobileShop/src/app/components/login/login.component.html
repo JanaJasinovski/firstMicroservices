@@ -1,0 +1,19 @@
+<div class="card">
+    <div class="inner-box">
+        <div class="card-front">
+            <h2>Login</h2>
+            <img
+            id="profile-img"
+            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+            class="profile-img-card"
+          />
+            <form #f="ngForm" (ngSubmit)="f.form.valid && login()">
+                <input type="text" class="input-box" id="email" name="email" [(ngModel)]="user.sub" #email="ngModel" placeholder="Enter email" required>
+                <input  type="password" class="input-box" placeholder="Enter password" id="password" name="password" [(ngModel)]="user.password" #password="ngModel" required>
+                <button type="submit" class="submit-btn">Submit</button>
+                <input type="checkbox"><span>Remember Me</span>
+            </form>
+            <button type="button" class="btn" (click)="regirectToRegiter()">I'm new here</button>
+        </div>
+    </div>
+</div>

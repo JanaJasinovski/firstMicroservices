@@ -1,0 +1,14 @@
+
+<div class="card" >
+    <div class="card__image">
+    </div>
+    <h6 class="card__price">Total price: {{ order.totalPrice | currency:'USD'}}</h6>
+    <h6 class="card__price">In amount: {{order.totalAmount}}</h6>
+    <h6 class="card__price">Status: {{order.orderStatus}}</h6>
+    <h6 class="card__price">Date created: {{order.dateCreated}}</h6>
+    <h6 class="card__price">Delivery date: {{order.deliveredDate}}</h6>
+    <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="open(order.id)">Показать содержимое заказа</button>
+    <div *ngIf="showLabel">
+
+    </div>
+</div>

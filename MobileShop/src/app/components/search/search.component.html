@@ -1,0 +1,20 @@
+<div class="row my-auto pt-3">
+    <span class="col-md-3 v-align padded-top-text">
+        <!-- Search our selection -->
+    </span>
+    <div class="col-md-4">
+        <div id="custom-search-input">
+            <div class="input-group col-md-12">
+                <input #myInput type="text" (keyup.enter)="doSearch(myInput.value)" class="form-control input-lg"
+                placeholder="Search for products ..."                />
+                <span class="input-group-btn" >
+                    <button (click)="doSearch(myInput.value)" class="btn btn-info btn-lg" type="button" style="background-color: white; border-color: white;">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+

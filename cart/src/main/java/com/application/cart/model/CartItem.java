@@ -22,7 +22,8 @@ public class CartItem implements Serializable {
     private String id;
     private Long userId;
     private Long productId;
+    private String productName;
     private Integer amount;
     private BigDecimal productPrice;
-
+    private String picture;
 }

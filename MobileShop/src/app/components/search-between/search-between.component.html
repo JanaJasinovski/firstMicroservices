@@ -1,0 +1,21 @@
+<div class="row my-auto pt-3">
+    <span class="col-md-3 v-align padded-top-text">
+    </span>
+    <div class="col-md-4" > 
+        <div id="custom-search-input">
+            <div class="input-group col-md-12">
+                <input #myInput1 type="text" class="form-control input-lg"
+                placeholder="Enter first price"                />
+                <input #myInput2 type="text" class="form-control input-lg"
+                placeholder="Enter second price"                />
+                <span class="input-group-btn" >
+                    <button (click)="doSearch(myInput1.value, myInput2.value)" class="btn btn-info btn-lg" type="button" style="background-color: white; border-color: white;" >
+                        <i class="fas fa-search" ></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+

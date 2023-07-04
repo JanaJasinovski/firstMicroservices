@@ -1,5 +1,6 @@
 package com.application.oauth.security.impl;
 
+import com.application.oauth.dto.UserDto;
 import com.application.oauth.model.User;
 import com.application.oauth.repository.UserRepository;
 import com.application.oauth.security.TokenProvider;
@@ -31,7 +32,6 @@ public class TokenProviderImpl implements TokenProvider {
     @Value( "${app.jwt.expiration-in-ms}" )
     private Long JWT_EXPIRATION_IN_MS;
 
-
     @Override
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -53,18 +53,19 @@ public class TokenProviderImpl implements TokenProvider {
     }
 
     @Override
-    public String generateToken(String username, List<String> roles) {
-        User user = userRepository.findByUsername(username).orElseThrow();
+    public String generateToken(String email, List<String> roles) {
+        User user = userRepository.findByEmail(email).orElseThrow();
         Key key = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .claim("roles", roles)
                 .claim("userId", user.getId())
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_IN_MS))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
+
 
     @Override
     public boolean validateToken(String token) {

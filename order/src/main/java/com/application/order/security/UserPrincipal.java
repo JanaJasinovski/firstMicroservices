@@ -18,7 +18,9 @@ import java.util.List;
 @Builder
 public class UserPrincipal implements UserDetails {
     private Long id;
-    private String username;
+    private String email;
+    private String firstName;
+    private String lastName;
     private String password;
     List<String> roles;
 
@@ -36,7 +38,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

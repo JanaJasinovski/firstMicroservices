@@ -1,18 +1,18 @@
 package com.application.product.service;
 
 import com.application.product.dto.ProductDto;
+import com.application.product.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {
-    void createProduct(ProductDto productDTO, Long userId);
-    ProductDto findByName(String name);
-    ProductDto findById(Long id);
-    List<ProductDto> findByPriceBetween(BigDecimal startPrice, BigDecimal endPrice);
-    List<ProductDto> findByAmount(Long amount);
-    List<ProductDto> findProductByNameAndPriceBetween(String name, BigDecimal startPrice, BigDecimal endPrice);
+    Product createProduct(ProductDto productDTO, Long userId, String token);
+    Page<Product> findByCategoryId(Long id, Pageable pageable);
+    Product findById(Long id);
+    Product getProductByName(String name);
     List<ProductDto> getAll();
-    List<ProductDto> getProductByAmountAndPriceBetween(Long amount, BigDecimal startPrice, BigDecimal endPrice);
+    Page<Product> deleteProductIfAdmin(Long productId, Long userId, Pageable pageable);
     void updateProductAmount(Long productId, Long amount);
 }

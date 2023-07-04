@@ -1,6 +1,6 @@
 package com.application.order.security.impl;
 
-
+import com.application.order.client.UserClient;
 import com.application.order.dto.UserDto;
 import com.application.order.security.TokenProvider;
 import io.jsonwebtoken.Claims;
@@ -23,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TokenProviderImpl implements TokenProvider {
 
+    private final UserClient userClient;
     public static final String ROLE_ADMIN = "ADMIN";
     @Value( "${app.jwt.secret}" )
     private String JWT_SECRET;
@@ -39,32 +40,14 @@ public class TokenProviderImpl implements TokenProvider {
                     .getBody();
             List<String> roles = claims.get("roles", List.class);
             Long userId = claims.get("userId", Long.class);
-            String username = claims.getSubject();
-            return new UserDto(userId, username, roles.get(0));
+            String email = claims.getSubject();
+            return new UserDto(userId, email, roles.get(0));
 
         } else {
             return null;
         }
     }
 
-    @Override
-    public UserDto extractUserFromToken(String token) {
-        Key key = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
-        if (validateToken(token)) {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            List<String> roles = claims.get("roles", List.class);
-            Long userId = claims.get("userId", Long.class);
-            String username = claims.getSubject();
-            return new UserDto(userId, username, roles.get(0));
-
-        } else {
-            return null;
-        }
-    }
     @Override
     public String getToken(HttpServletRequest httpServletRequest) {
         final String bearerToken = httpServletRequest.getHeader("Authorization");
